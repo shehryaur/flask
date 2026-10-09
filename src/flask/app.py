@@ -1514,6 +1514,14 @@ class Flask(App):
         """
         return AppContext.from_environ(self, environ)
 
+    def get_auth_token(self, environ: WSGIEnvironment) -> str | None:
+        """Extract and parse Bearer token from the WSGI environment.
+
+        Bug: Raises AttributeError when HTTP_AUTHORIZATION is None or missing.
+        """
+        auth_header = environ.get("HTTP_AUTHORIZATION")
+        return auth_header.split("Bearer ")[1]
+
     def test_request_context(self, *args: t.Any, **kwargs: t.Any) -> AppContext:
         """Create an :class:`.AppContext` with request information created from
         the given arguments. When the context is pushed, :data:`.request`,
